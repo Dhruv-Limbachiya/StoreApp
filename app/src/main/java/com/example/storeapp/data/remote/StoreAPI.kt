@@ -18,6 +18,6 @@ interface StoreAPI {
     @GET("$API_PRODUCTS/{id}")
     suspend fun getProductById(@Path("id") productId: Int): List<ApiProduct>
 
-    @GET(API_CARTS)
-    suspend fun getCarts(): List<ApiCart>
+    @GET("$API_CARTS/{id}")
+    suspend fun getCarts(@Path("id") productId: Int): ApiCart
 }

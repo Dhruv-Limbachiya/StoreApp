@@ -13,4 +13,8 @@ data class ProductEntity(
     val price: Double,
     val title: String,
     val category: String
-)
+) {
+    companion object {
+        val INVALID_PRODUCT = ProductEntity(0,"",0.0,"","")
+    }
+}

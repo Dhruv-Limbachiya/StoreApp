@@ -1,8 +1,8 @@
 package com.example.storeapp.data.model
 
 import com.example.storeapp.data.cache.entity.Cart
-import com.example.storeapp.data.cache.entity.CartItem
-import com.example.storeapp.data.cache.entity.CartItem.Companion.INVALID_CART_ITEM
+import com.example.storeapp.data.cache.entity.CartItemEntity
+import com.example.storeapp.data.cache.entity.CartItemEntity.Companion.INVALID_CART_ITEM
 import com.example.storeapp.util.mapper.ApiMapper
 import com.google.gson.annotations.SerializedName
 
@@ -35,10 +35,10 @@ data class ApiCartProduct(
     val quantity: Int? = null,
     @field:SerializedName("productId")
     val productId: Int? = null
-) : ApiMapper<ApiCartProduct, CartItem> {
+) : ApiMapper<ApiCartProduct, CartItemEntity> {
 
-    override fun mapToDomain(apiEntity: ApiCartProduct): CartItem {
-        return CartItem(
+    override fun mapToDomain(apiEntity: ApiCartProduct): CartItemEntity {
+        return CartItemEntity(
             quantity ?: 0,
             productId ?: 0
         )
