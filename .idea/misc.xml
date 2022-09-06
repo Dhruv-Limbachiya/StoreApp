@@ -3,6 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/drawable-v24/drawable_gradient_splash_background.xml" value="0.1145" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/drawable/drawable_gradient_splash_background.xml" value="0.1715" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/drawable/drawable_search_bar_background.xml" value="0.1715" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/drawable/ic_search_vector.xml" value="0.1145" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/font/quicksand.xml" value="0.196875" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/activity_main.xml" value="0.15833333333333333" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/activity_splash.xml" value="0.15833333333333333" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/fragment_cart.xml" value="0.12685185185185185" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/fragment_products.xml" value="0.22" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/layout_dashboard_item.xml" value="0.12685185185185185" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/layout_products_item.xml" value="0.25" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/layout/progressbar_dialog_layout.xml" value="0.33" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1145" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1145" />
+        <entry key="..\:/Android Projects/Store App/app/src/main/res/mipmap-hdpi/ic_launcher_round.xml" value="0.1145" />
         <entry key="..\:/learn/samples/Store App/app/src/main/res/layout/activity_main.xml" value="0.159375" />
       </map>
     </option>

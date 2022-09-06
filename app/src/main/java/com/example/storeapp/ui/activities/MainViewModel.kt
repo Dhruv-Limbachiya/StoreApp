@@ -1,4 +1,4 @@
-package com.example.storeapp.ui.main
+package com.example.storeapp.ui.activities
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,19 +22,5 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val storeAppRepository: StoreAppRepository
 ) : ViewModel() {
-
-    private var _productState = MutableStateFlow(mutableListOf<GeneralProductAndCartProduct>())
-    val productState: StateFlow<List<GeneralProductAndCartProduct>> = _productState
-
-
-    fun getAllProducts() = viewModelScope.launch(Dispatchers.IO) {
-        storeAppRepository.getCartItems().onEach { res ->
-            when (res) {
-                is Resource.Success -> {
-                    _productState.value = res.data as MutableList<GeneralProductAndCartProduct>
-                }
-            }
-        }.launchIn(this)
-    }
 
 }
