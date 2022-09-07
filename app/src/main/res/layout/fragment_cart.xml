@@ -5,12 +5,118 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.example.storeapp.ui.fragments.cart.CartViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.activities.MainActivity">
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_cart_items"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/layout_pricing_details"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/layout_cart_item" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_pricing_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white_color_shade1"
+            android:padding="@dimen/dimen_16dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_subtotal_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_medium"
+                android:text="@string/text_subtotal"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_subtotal_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_medium"
+                android:text="@{@string/product_price(viewModel.observableSubTotal)}"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="₹100.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_shipping_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_medium"
+                android:text="@string/text_shipping"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_subtotal_label" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_shipping_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_medium"
+                android:text="@{@string/product_price(viewModel.observableShippingCharge)}"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_subtotal_value"
+                tools:text="₹100.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_total_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_bold"
+                android:text="@string/text_total"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_shipping_label" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_total_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_bold"
+                android:text="@{@string/product_price(viewModel.observableTotal)}"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_shipping_value"
+                tools:text="₹100.0" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_checkout"
+                style="@style/StoreAppButtonStyle"
+                android:layout_marginBottom="@dimen/dimen_12dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:text="@string/text_checkout"
+                android:onClick="@{() -> viewModel.onCheckOut()}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_total_label"
+                tools:ignore="UnusedAttribute" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_no_cart_item_found"
+            style="@style/NoRecordFoundTextStyle"
+            android:text="@string/text_no_items_found"
+            tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

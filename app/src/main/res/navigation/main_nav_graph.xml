@@ -8,13 +8,17 @@
     <fragment
         android:id="@+id/productsFragment"
         android:name="com.example.storeapp.ui.fragments.products.ProductsFragment"
-        android:label="Products"
-        tools:layout="@layout/fragment_products" />
+        android:label="@string/label_products"
+        tools:layout="@layout/fragment_products" >
+        <action
+            android:id="@+id/action_productsFragment_to_cartsFragment"
+            app:destination="@id/cartsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/cartsFragment"
         android:name="com.example.storeapp.ui.fragments.cart.CartFragment"
-        android:label="Carts"
+        android:label="@string/label_my_carts"
         tools:layout="@layout/fragment_cart" />
 
 </navigation>

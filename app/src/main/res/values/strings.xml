@@ -6,4 +6,14 @@
     <string name="text_no_items_found">No items found.</string>
     <string name="message_something_went_wrong">Something went wrong!</string>
     <string name="text_search">Search by category or id</string>
+    <string name="text_delete_product_content_description">Delete product from cart</string>
+    <string name="product_qty">Qty : %s</string>
+    <string name="text_subtotal">Subtotal</string>
+    <string name="text_shipping">Shipping</string>
+    <string name="text_total">Total</string>
+    <string name="text_total_amount">Total : %s</string>
+    <string name="text_checkout">Checkout</string>
+    <string name="label_my_carts">My Carts</string>
+    <string name="label_products">Products</string>
+    <string name="text_cart">Cart</string>
 </resources>

@@ -4,21 +4,109 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.example.storeapp.R
+import com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct
+import com.example.storeapp.databinding.FragmentCartBinding
+import com.example.storeapp.ui.adapter.CartsAdapter
+import com.example.storeapp.ui.base.BaseFragment
+import com.example.storeapp.util.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class CartFragment : Fragment() {
-    
+class CartFragment : BaseFragment() {
+
+    private lateinit var mBinding: FragmentCartBinding
+    private val mViewModel by viewModels<CartViewModel>()
+
+    @Inject
+    lateinit var mAdapter: CartsAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+    ): View {
+        mBinding = FragmentCartBinding.inflate(inflater, container, false)
+        mBinding.viewModel = mViewModel
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initComponents()
+        collectFlows()
+    }
+
+    private fun initComponents() {
+        mViewModel.getCartItems()
+    }
+
+    private fun collectFlows() {
+        lifecycleScope.launchWhenStarted {
+            mViewModel.cartState.collect {
+                if (it.isLoading) {
+                    showProgressbar()
+                } else if (it.carts?.isNotEmpty() == true) {
+                    hideProgressbar()
+                    addDataToRecyclerView(it.carts ?: emptyList())
+                    showRecyclerViewHideNoRecordFound()
+                } else if (it.errorMessage?.isNotEmpty() == true) {
+                    hideProgressbar()
+                    hideRecyclerViewShowNoRecordFound()
+                    mBinding.root.showSnackBar(
+                        it.errorMessage ?: getString(R.string.message_something_went_wrong),
+                        true
+                    )
+                } else {
+                    hideProgressbar()
+                    addDataToRecyclerView(it.carts ?: emptyList())
+                    if (it.carts?.isEmpty() == true) {
+                        hideRecyclerViewShowNoRecordFound()
+                    } else {
+                        showRecyclerViewHideNoRecordFound()
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            mViewModel.checkoutSuccess.collectLatest {
+                mBinding.layoutPricingDetails.isVisible = !it
+                if(it) {
+                    mBinding.root.showSnackBar(
+                        "Order placed! Products will be delivered soon at doorstep",
+                        false
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds products in the recyclerview adapter.
+     */
+    private fun addDataToRecyclerView(carts: List<GeneralProductAndCartProduct>) {
+        mBinding.rvCartItems.apply {
+            adapter = mAdapter
+            mAdapter.submitList(carts)
+        }
+    }
+
+    /**
+     * Helper method to show/hide recycler view and no record found textview.
+     */
+    private fun hideRecyclerViewShowNoRecordFound() {
+        mBinding.rvCartItems.isVisible = false
+        mBinding.tvNoCartItemFound.isVisible = true
+    }
+
+    private fun showRecyclerViewHideNoRecordFound() {
+        mBinding.rvCartItems.isVisible = true
+        mBinding.tvNoCartItemFound.isVisible = false
     }
 }

@@ -7,18 +7,17 @@ import com.example.storeapp.data.remote.StoreAPI
 import com.example.storeapp.util.NetworkHelper
 import com.example.storeapp.util.Resource
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
 
-class StoreAppRepositoryImpl @Inject constructor(
+class ProductsRepositoryImpl @Inject constructor(
     private val storeAPI: StoreAPI,
     private val storeAppDatabase: StoreAppDatabase,
     private val networkHelper: NetworkHelper
-) : StoreAppRepository {
+) : ProductsRepository {
 
     override fun getAllProducts() = flow {
         emit(Resource.Loading())
@@ -113,46 +112,6 @@ class StoreAppRepositoryImpl @Inject constructor(
 
         if (cacheProductsById?.isNotEmpty() == true) {
             emit(Resource.Success(cacheProductsById))
-        } else {
-            emit(
-                Resource.Error(
-                    "Record not found!",
-                    emptyList()
-                )
-            )
-        }
-    }
-
-    override fun getCartItems() = flow {
-        emit(Resource.Loading())
-//        val remoteCarts = storeAPI.getCarts(1).let { it.mapToDomain(it).products }
-//        storeAppDatabase.storeDao.insertAllCarts(remoteCarts)
-//        Log.i("Get Carts", "getCartItems: ${storeAppDatabase.storeDao.getAllCarts()}")
-
-        val cacheCarts = storeAppDatabase.storeDao.getCartItems()
-
-        if (cacheCarts?.isEmpty() == true) {
-            try {
-                val remoteCarts = storeAPI.getCarts(1).let { it.mapToDomain(it).products }
-                storeAppDatabase.storeDao.insertAllCarts(remoteCarts)
-            } catch (e: HttpException) {
-                emit(
-                    Resource.Error(
-                        "Oops,something went wrong!",
-                        emptyList<GeneralProductAndCartProduct>()
-                    )
-                )
-            } catch (e: IOException) {
-                Resource.Error(
-                    "Couldn't reach the server.Check your internet connection",
-                    emptyList<GeneralProductAndCartProduct>()
-                )
-            }
-        }
-
-        val cacheCartItems = storeAppDatabase.storeDao.getCartItems()?.filter { it.cart != null }
-        if (cacheCartItems?.isNotEmpty() == true) {
-            emit(Resource.Success(cacheCartItems))
         } else {
             emit(
                 Resource.Error(

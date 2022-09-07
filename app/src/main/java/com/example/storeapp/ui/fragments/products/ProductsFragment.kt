@@ -1,21 +1,12 @@
 package com.example.storeapp.ui.fragments.products
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.storeapp.R
 import com.example.storeapp.data.cache.entity.ProductEntity
 import com.example.storeapp.databinding.FragmentProductsBinding
@@ -23,8 +14,6 @@ import com.example.storeapp.ui.adapter.ProductsAdapter
 import com.example.storeapp.ui.base.BaseFragment
 import com.example.storeapp.util.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,6 +24,11 @@ class ProductsFragment : BaseFragment() {
 
     @Inject
     lateinit var mAdapter: ProductsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,23 +60,23 @@ class ProductsFragment : BaseFragment() {
     }
 
     private fun collectFlows() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mViewModel.productState.collect {
-                    if (it.isLoading) {
+        lifecycleScope.launchWhenResumed {
+            mViewModel.productState.collect {
+                if (it.isLoading) {
+                    if (it.products?.isNotEmpty() == true) {
+                        hideProgressbar()
+                    } else {
                         showProgressbar()
-                    } else if (it.products?.isNotEmpty() == true) {
-                        hideProgressbar()
-                        addDataToRecyclerView(it.products ?: emptyList())
-                        showRecyclerViewHideNoRecordFound()
-                    } else if (it.errorMessage?.isNotEmpty() == true) {
-                        hideProgressbar()
-                        hideRecyclerViewShowNoRecordFound()
-                        mBinding.root.showSnackBar(
-                            it.errorMessage ?: getString(R.string.message_something_went_wrong),
-                            true
-                        )
                     }
+                } else if (it.products?.isNotEmpty() == true) {
+                    addDataToRecyclerView(it.products ?: emptyList())
+                    showRecyclerViewHideNoRecordFound()
+                } else if (it.errorMessage?.isNotEmpty() == true) {
+                    hideRecyclerViewShowNoRecordFound()
+                    mBinding.root.showSnackBar(
+                        it.errorMessage ?: getString(R.string.message_something_went_wrong),
+                        true
+                    )
                 }
             }
         }
@@ -104,10 +98,26 @@ class ProductsFragment : BaseFragment() {
     private fun hideRecyclerViewShowNoRecordFound() {
         mBinding.rvProducts.isVisible = false
         mBinding.tvNoRecordFound.isVisible = true
+        hideProgressbar()
     }
 
     private fun showRecyclerViewHideNoRecordFound() {
         mBinding.rvProducts.isVisible = true
         mBinding.tvNoRecordFound.isVisible = false
+        hideProgressbar()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_cart -> {
+                findNavController().navigate(ProductsFragmentDirections.actionProductsFragmentToCartsFragment())
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

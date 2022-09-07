@@ -13,4 +13,7 @@
     <dimen name="margin_seventy_two">72dp</dimen>
     <dimen name="dimen_200dp">200dp</dimen>
     <dimen name="dimen_100dp">100dp</dimen>
+    <dimen name="dimen_6dp">6dp</dimen>
+    <dimen name="dimen_24dp">24dp</dimen>
+    <dimen name="dimen_20sp">20sp</dimen>
 </resources>
