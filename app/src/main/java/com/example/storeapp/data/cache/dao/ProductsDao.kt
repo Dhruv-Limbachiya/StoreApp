@@ -5,8 +5,11 @@ import com.example.storeapp.data.cache.entity.CartItemEntity
 import com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct
 import com.example.storeapp.data.cache.entity.ProductEntity
 
+/*
+ * Products Dao to interact with products table in db
+ */
 @Dao
-interface StoreDao {
+interface ProductsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllProducts(products: List<ProductEntity>)
 
@@ -18,17 +21,4 @@ interface StoreDao {
 
     @Query("SELECT * FROM products WHERE product_id = :productId")
     fun getProductsById(productId: Int): List<ProductEntity>?
-
-    @Query("DELETE FROM products")
-    suspend fun deleteAllProducts()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllCarts(cartItemEntity: List<CartItemEntity>)
-
-    @Query("SELECT * FROM carts ")
-    fun getAllCarts(): List<CartItemEntity>?
-
-    @Transaction
-    @Query("SELECT * FROM products")
-    fun getCartItems(): List<GeneralProductAndCartProduct>?
 }

@@ -10,7 +10,9 @@ data class Cart(
     val products: List<CartItemEntity>
 )
 
-
+/**
+ * Represents a cart item in "carts" table
+ */
 @Entity(tableName = "carts")
 data class CartItemEntity(
     @PrimaryKey(autoGenerate = false)

@@ -2,6 +2,9 @@ package com.example.storeapp.ui.fragments.products
 
 import com.example.storeapp.data.cache.entity.ProductEntity
 
+/**
+ * Represent current state of product
+ */
 data class ProductState(
     var products: List<ProductEntity>? = emptyList(),
     var errorMessage: String?,

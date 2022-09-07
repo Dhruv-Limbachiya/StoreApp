@@ -27,7 +27,7 @@ class CartsAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         /**
-         * Bind views with product data.
+         * Bind views with cart data.
          */
         fun bind(
             cart: GeneralProductAndCartProduct?,

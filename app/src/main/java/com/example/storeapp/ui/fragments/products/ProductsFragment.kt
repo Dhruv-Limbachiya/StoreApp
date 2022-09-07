@@ -47,13 +47,14 @@ class ProductsFragment : BaseFragment() {
 
     private fun initComponents() {
         mViewModel.getAllProducts()
+
         mBinding.etSearch.doAfterTextChanged {
             it?.let {
                 if (it.isNotBlank()) {
                     mViewModel.getProductsByCategoryOrId(it.toString())
                 } else {
                     mViewModel.getAllProducts()
-                    mBinding.rvProducts.smoothScrollToPosition(0)
+                    mBinding.rvProducts.scrollToPosition(0)
                 }
             }
         }

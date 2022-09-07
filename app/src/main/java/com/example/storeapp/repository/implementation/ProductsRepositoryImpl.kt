@@ -1,9 +1,9 @@
-package com.example.storeapp.repository
+package com.example.storeapp.repository.implementation
 
 import com.example.storeapp.data.cache.db.StoreAppDatabase
-import com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct
 import com.example.storeapp.data.cache.entity.ProductEntity
 import com.example.storeapp.data.remote.StoreAPI
+import com.example.storeapp.repository.interfaces.ProductsRepository
 import com.example.storeapp.util.NetworkHelper
 import com.example.storeapp.util.Resource
 import kotlinx.coroutines.delay
@@ -20,11 +20,10 @@ class ProductsRepositoryImpl @Inject constructor(
 ) : ProductsRepository {
 
     override fun getAllProducts() = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading()) // emit the loading state
+        delay(1000L) // simulate processing requests to make progressbar visible for certain amount of time
 
-        delay(1000L)
-
-        val cacheProducts = storeAppDatabase.storeDao.getAllProducts()
+        val cacheProducts = storeAppDatabase.productsDao.getAllProducts()
 
         if (cacheProducts?.isNotEmpty() == true) {
             emit(Resource.Success(cacheProducts))
@@ -32,12 +31,13 @@ class ProductsRepositoryImpl @Inject constructor(
         }
 
         try {
-            if(networkHelper.isInternetConnected()) {
+            // Fetch products from the api if and only if there are no product in "products" table
+            if (networkHelper.isInternetConnected()) {
                 val remoteProducts = storeAPI.getAllProduct().map { it.mapToDomain(it) }
-                storeAppDatabase.storeDao.insertAllProducts(remoteProducts)
+                storeAppDatabase.productsDao.insertAllProducts(remoteProducts)
                 emit(Resource.Success(remoteProducts))
             } else {
-                emit(Resource.Error("No internet connection",emptyList<ProductEntity>()))
+                emit(Resource.Error("No internet connection", emptyList<ProductEntity>()))
             }
         } catch (e: HttpException) {
             emit(Resource.Error("Oops,something went wrong!", emptyList<ProductEntity>()))
@@ -50,17 +50,18 @@ class ProductsRepositoryImpl @Inject constructor(
     }
 
     override fun getProductsByCategory(category: String) = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading()) // emit the loading state
 
-        val cacheProducts = storeAppDatabase.storeDao.getAllProducts()
+        val cacheProducts = storeAppDatabase.productsDao.getAllProducts()
 
         if (cacheProducts?.isEmpty() == true) {
             try {
-                if(networkHelper.isInternetConnected()) {
+                // Fetch products from the api if and only if there are no product in "products" table
+                if (networkHelper.isInternetConnected()) {
                     val remoteProducts = storeAPI.getAllProduct().map { it.mapToDomain(it) }
-                    storeAppDatabase.storeDao.insertAllProducts(remoteProducts)
+                    storeAppDatabase.productsDao.insertAllProducts(remoteProducts)
                 } else {
-                    emit(Resource.Error("No internet connection",emptyList<ProductEntity>()))
+                    emit(Resource.Error("No internet connection", emptyList<ProductEntity>()))
                 }
             } catch (e: HttpException) {
                 emit(Resource.Error("Oops,something went wrong!", emptyList<ProductEntity>()))
@@ -71,7 +72,9 @@ class ProductsRepositoryImpl @Inject constructor(
                 )
             }
         }
-        val cacheProductsByCategory = storeAppDatabase.storeDao.getProductsByCategory(category)
+
+        // Query database to fetch products by category.
+        val cacheProductsByCategory = storeAppDatabase.productsDao.getProductsByCategory(category)
 
         if (cacheProductsByCategory?.isNotEmpty() == true) {
             emit(Resource.Success(cacheProductsByCategory))
@@ -86,17 +89,18 @@ class ProductsRepositoryImpl @Inject constructor(
     }
 
     override fun getProductsById(productId: Int) = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading()) // emit the loading state
 
-        val cacheProducts = storeAppDatabase.storeDao.getAllProducts()
+        val cacheProducts = storeAppDatabase.productsDao.getAllProducts()
 
         if (cacheProducts?.isEmpty() == true) {
             try {
-                if(networkHelper.isInternetConnected()) {
+                // Fetch products from the api if and only if there are no product in "products" table
+                if (networkHelper.isInternetConnected()) {
                     val remoteProducts = storeAPI.getAllProduct().map { it.mapToDomain(it) }
-                    storeAppDatabase.storeDao.insertAllProducts(remoteProducts)
+                    storeAppDatabase.productsDao.insertAllProducts(remoteProducts)
                 } else {
-                    emit(Resource.Error("No internet connection",emptyList<ProductEntity>()))
+                    emit(Resource.Error("No internet connection", emptyList<ProductEntity>()))
                 }
             } catch (e: HttpException) {
                 emit(Resource.Error("Oops,something went wrong!", emptyList<ProductEntity>()))
@@ -108,7 +112,8 @@ class ProductsRepositoryImpl @Inject constructor(
             }
         }
 
-        val cacheProductsById = storeAppDatabase.storeDao.getProductsById(productId)
+        // Query database to fetch products by id.
+        val cacheProductsById = storeAppDatabase.productsDao.getProductsById(productId)
 
         if (cacheProductsById?.isNotEmpty() == true) {
             emit(Resource.Success(cacheProductsById))

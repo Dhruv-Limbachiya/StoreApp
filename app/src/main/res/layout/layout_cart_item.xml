@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="cartItem"
             type="com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct" />
@@ -27,7 +26,7 @@
                 android:id="@+id/iv_cart_image_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/product_image_placeholder_color"
+                android:background="@color/light_gray"
                 tools:ignore="MissingConstraints">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -35,8 +34,8 @@
                     android:layout_width="@dimen/dimen_100dp"
                     android:layout_height="@dimen/dimen_100dp"
                     android:adjustViewBounds="true"
-                    android:padding="12dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
+                    android:padding="@dimen/dimen_12dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:setImageUrl="@{cartItem.productEntity.image}"

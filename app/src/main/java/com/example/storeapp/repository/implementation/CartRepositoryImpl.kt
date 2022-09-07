@@ -1,8 +1,9 @@
-package com.example.storeapp.repository
+package com.example.storeapp.repository.implementation
 
 import com.example.storeapp.data.cache.db.StoreAppDatabase
 import com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct
 import com.example.storeapp.data.remote.StoreAPI
+import com.example.storeapp.repository.interfaces.CartRepository
 import com.example.storeapp.util.NetworkHelper
 import com.example.storeapp.util.Resource
 import kotlinx.coroutines.delay
@@ -21,15 +22,16 @@ class CartRepositoryImpl @Inject constructor(
 ) : CartRepository {
 
     override fun getCartItems() = flow {
-        emit(Resource.Loading())
-        delay(500L)
-        val cacheCarts = storeAppDatabase.storeDao.getAllCarts()
+        emit(Resource.Loading()) // emit the loading state
+        delay(500L) // simulate processing requests to make progressbar visible for certain amount of time
+        val cacheCarts = storeAppDatabase.cartsDao.getAllCarts()
 
         if (cacheCarts?.isEmpty() == true) {
             try {
+                // Fetch carts from the api if and only if there are no cart items in "carts" table
                 if (networkHelper.isInternetConnected()) {
                     val remoteCarts = storeAPI.getCarts(1).let { it.mapToDomain(it).products }
-                    storeAppDatabase.storeDao.insertAllCarts(remoteCarts)
+                    storeAppDatabase.cartsDao.insertAllCarts(remoteCarts)
                 } else {
                     emit(
                         Resource.Error(
@@ -53,7 +55,10 @@ class CartRepositoryImpl @Inject constructor(
             }
         }
 
-        val cacheCartItems = storeAppDatabase.storeDao.getCartItems()?.filter { it.cart != null }
+        /**
+         * Get list of pair object (ProductEntity & CartItemEntity) and filter out the null cart item.
+         */
+        val cacheCartItems = storeAppDatabase.cartsDao.getCartItems()?.filter { it.cart != null }
 
         if (cacheCartItems?.isNotEmpty() == true) {
             emit(Resource.Success(cacheCartItems))
@@ -68,10 +73,13 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     override fun deleteAllCartItems() = flow {
-        emit(Resource.Loading())
-        delay(500L)
-        storeAppDatabase.storeDao.deleteAllCartItems()
-        val cacheCarts = storeAppDatabase.storeDao.getAllCarts()
+        emit(Resource.Loading()) // emit the loading state
+        delay(500L) // simulate processing requests to make progressbar visible for certain amount of time
+
+        storeAppDatabase.cartsDao.deleteAllCartItems() // deletes all the cart items in "carts" table
+        val cacheCarts = storeAppDatabase.cartsDao.getAllCarts()
+
+        // Ensuring all the cart items are deleted or not
         if (cacheCarts?.isEmpty() == true) {
             emit(
                 Resource.Success(

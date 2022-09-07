@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.storeapp.data.cache.db.StoreAppDatabase
 import com.example.storeapp.data.remote.StoreAPI
-import com.example.storeapp.repository.CartRepository
-import com.example.storeapp.repository.CartRepositoryImpl
-import com.example.storeapp.repository.ProductsRepository
-import com.example.storeapp.repository.ProductsRepositoryImpl
+import com.example.storeapp.repository.interfaces.CartRepository
+import com.example.storeapp.repository.implementation.CartRepositoryImpl
+import com.example.storeapp.repository.interfaces.ProductsRepository
+import com.example.storeapp.repository.implementation.ProductsRepositoryImpl
 import com.example.storeapp.ui.adapter.CartsAdapter
 import com.example.storeapp.ui.adapter.ProductsAdapter
 import com.example.storeapp.util.Constants.DATABASE_NAME

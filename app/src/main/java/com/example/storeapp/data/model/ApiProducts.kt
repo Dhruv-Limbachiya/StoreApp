@@ -4,6 +4,9 @@ import android.media.Rating
 import com.example.storeapp.data.cache.entity.ProductEntity
 import com.example.storeapp.util.mapper.ApiMapper
 
+/**
+ * Models cart object received from api response
+ */
 data class ApiProduct(
     val image: String? = null,
     val price: Double? = null,
@@ -15,7 +18,7 @@ data class ApiProduct(
 ) : ApiMapper<ApiProduct, ProductEntity> {
 
     /**
-     * Maps api modeled object to app specific domain object.
+     * Maps modeled object into domain(use-case specific) object
      */
     override fun mapToDomain(apiEntity: ApiProduct): ProductEntity {
         return ProductEntity(

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.storeapp.data.cache.entity.CartItemEntity
 import com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct
 import com.example.storeapp.data.cache.entity.ProductEntity
-import com.example.storeapp.repository.CartRepository
+import com.example.storeapp.repository.interfaces.CartRepository
 import com.example.storeapp.util.Constants.DEFAULT_SHIPPING_CHARGE
 import com.example.storeapp.util.ObservableString
 import com.example.storeapp.util.Resource
@@ -23,24 +23,28 @@ class CartViewModel @Inject constructor(
     private val cartsRepository: CartRepository
 ) : ViewModel() {
 
+    // Holds cart state as flow.
     private var _cartState = MutableStateFlow(CartState.INVALID_CART_STATE)
     val cartState: StateFlow<CartState> = _cartState
 
+    // Holds checkout status as flow.
     private var _checkoutSuccess = MutableStateFlow(false)
     val checkoutSuccess: StateFlow<Boolean> = _checkoutSuccess
 
+    // observables for views(xml)
     val observableSubTotal = ObservableString()
     val observableTotal = ObservableString()
     val observableShippingCharge = ObservableString()
 
     fun getCartItems() = viewModelScope.launch(Dispatchers.IO) {
+        // Get cart items flow and compare each emission with their possible states.
         cartsRepository.getCartItems().onEach { res ->
             when (res) {
                 is Resource.Loading -> {
-                    _cartState.value = _cartState.value.copy(isLoading = true)
+                    _cartState.value = _cartState.value.copy(isLoading = true) // made cart state as loading state.
                 }
                 is Resource.Success -> {
-                    calculateTotal(res)
+                    calculateTotal(res) // calculate products subtotal and total inc. shipping charges
                     _cartState.value = _cartState.value.copy(
                         carts = res.data ?: emptyList(),
                         isLoading = false
@@ -54,12 +58,14 @@ class CartViewModel @Inject constructor(
         }.launchIn(this)
     }
 
+    /**
+     * Calculates products subtotal and total inc. shipping charges
+     */
     private fun calculateTotal(res: Resource<List<GeneralProductAndCartProduct>>) {
         var subTotal = 0.0
 
         res.data?.forEach { generalProductAndCartProduct ->
-            val product =
-                generalProductAndCartProduct.productEntity ?: ProductEntity.INVALID_PRODUCT
+            val product = generalProductAndCartProduct.productEntity ?: ProductEntity.INVALID_PRODUCT
             val cart = generalProductAndCartProduct.cart ?: CartItemEntity.INVALID_CART_ITEM
 
             if (cart.quantity != 0 && product.price != 0.0) {
@@ -73,6 +79,9 @@ class CartViewModel @Inject constructor(
         observableTotal.set(total.toString())
     }
 
+    /**
+     * Function to simulate checkout process by deleting cart items from the "carts" table.
+     */
     fun onCheckOut() {
         viewModelScope.launch(Dispatchers.IO) {
             cartsRepository.deleteAllCartItems().onEach { res ->

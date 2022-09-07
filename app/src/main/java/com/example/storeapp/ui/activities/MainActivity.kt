@@ -31,8 +31,7 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun setNavToolBar() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController // find NavController using NavHostFragment
 
         // Configure App bar by specifying all top level destinations.

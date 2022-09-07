@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Represents product in "products" table
+ */
 @Entity(tableName = "products")
 data class ProductEntity(
     @PrimaryKey

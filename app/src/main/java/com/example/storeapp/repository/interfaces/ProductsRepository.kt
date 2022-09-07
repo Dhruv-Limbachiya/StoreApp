@@ -1,14 +1,10 @@
-package com.example.storeapp.repository
+package com.example.storeapp.repository.interfaces
 
-import com.example.storeapp.data.cache.entity.GeneralProductAndCartProduct
 import com.example.storeapp.data.cache.entity.ProductEntity
-import com.example.storeapp.data.model.ApiCart
-import com.example.storeapp.data.model.ApiProduct
 import com.example.storeapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface ProductsRepository {
-    /* abstract methods for screen 1 (products list screen) */
     fun getAllProducts(): Flow<Resource<List<ProductEntity>>>
     fun getProductsByCategory(category: String): Flow<Resource<List<ProductEntity>>>
     fun getProductsById(productId: Int): Flow<Resource<List<ProductEntity>>>

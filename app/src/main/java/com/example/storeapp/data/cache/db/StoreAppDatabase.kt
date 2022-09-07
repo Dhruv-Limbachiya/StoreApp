@@ -2,7 +2,8 @@ package com.example.storeapp.data.cache.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.storeapp.data.cache.dao.StoreDao
+import com.example.storeapp.data.cache.dao.CartsDao
+import com.example.storeapp.data.cache.dao.ProductsDao
 import com.example.storeapp.data.cache.entity.CartItemEntity
 import com.example.storeapp.data.cache.entity.ProductEntity
 
@@ -12,5 +13,6 @@ import com.example.storeapp.data.cache.entity.ProductEntity
     version = 1
 )
 abstract class StoreAppDatabase : RoomDatabase() {
-    abstract val storeDao: StoreDao
+    abstract val productsDao: ProductsDao
+    abstract val cartsDao: CartsDao
 }
