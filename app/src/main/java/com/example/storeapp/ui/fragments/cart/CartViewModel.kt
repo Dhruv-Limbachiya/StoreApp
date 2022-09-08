@@ -28,8 +28,8 @@ class CartViewModel @Inject constructor(
     val cartState: StateFlow<CartState> = _cartState
 
     // Holds checkout status as flow.
-    private var _checkoutSuccess = MutableStateFlow(false)
-    val checkoutSuccess: StateFlow<Boolean> = _checkoutSuccess
+    private var _checkoutState = MutableStateFlow(UIState.INVALID_UI_STATE)
+    val checkoutState: StateFlow<UIState> = _checkoutState
 
     // observables for views(xml)
     val observableSubTotal = ObservableString()
@@ -95,11 +95,12 @@ class CartViewModel @Inject constructor(
                             carts = res.data ?: emptyList(),
                             isLoading = false
                         )
-                        _checkoutSuccess.value = res.data?.isEmpty() == true
+                        _checkoutState.value = _checkoutState.value.copy(message = res.message,isSuccess = true)
                     }
                     is Resource.Error -> {
                         _cartState.value =
                             _cartState.value.copy(isLoading = false, errorMessage = res.message)
+                        _checkoutState.value = _checkoutState.value.copy(message = res.message,isSuccess = false)
                     }
                 }
             }.launchIn(this)

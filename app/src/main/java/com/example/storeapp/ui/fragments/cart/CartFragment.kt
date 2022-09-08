@@ -75,11 +75,11 @@ class CartFragment : BaseFragment() {
         }
 
         lifecycleScope.launchWhenStarted {
-            mViewModel.checkoutSuccess.collectLatest {
-                mBinding.layoutPricingDetails.isVisible = !it
-                if(it) {
+            mViewModel.checkoutState.collectLatest { uiState ->
+                mBinding.layoutPricingDetails.isVisible = !uiState.isSuccess
+                uiState.message?.let {
                     mBinding.root.showSnackBar(
-                        "Order placed! Products will be delivered soon at doorstep",
+                        it,
                         false
                     )
                 }

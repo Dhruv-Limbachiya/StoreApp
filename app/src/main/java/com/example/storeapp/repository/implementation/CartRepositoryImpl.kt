@@ -76,11 +76,9 @@ class CartRepositoryImpl @Inject constructor(
         emit(Resource.Loading()) // emit the loading state
         delay(500L) // simulate processing requests to make progressbar visible for certain amount of time
 
-        storeAppDatabase.cartsDao.deleteAllCartItems() // deletes all the cart items in "carts" table
         val cacheCarts = storeAppDatabase.cartsDao.getAllCarts()
-
-        // Ensuring all the cart items are deleted or not
-        if (cacheCarts?.isEmpty() == true) {
+        if(cacheCarts?.isNotEmpty() == true) {
+            storeAppDatabase.cartsDao.deleteAllCartItems() // deletes all the cart items in "carts" table
             emit(
                 Resource.Success(
                     emptyList<GeneralProductAndCartProduct>(),
@@ -90,10 +88,31 @@ class CartRepositoryImpl @Inject constructor(
         } else {
             emit(
                 Resource.Error(
-                    "Failed to delete cart items",
+                    "Carts is empty!",
                     emptyList<GeneralProductAndCartProduct>()
                 )
             )
         }
+
+
+
+
+
+//        // Ensuring all the cart items are deleted or not
+//        if (cacheCarts?.isEmpty() == true) {
+//            emit(
+//                Resource.Success(
+//                    emptyList<GeneralProductAndCartProduct>(),
+//                    "Order placed! Products will be delivered soon at doorstep"
+//                )
+//            )
+//        } else {
+//            emit(
+//                Resource.Error(
+//                    "Failed to delete cart items",
+//                    emptyList<GeneralProductAndCartProduct>()
+//                )
+//            )
+//        }
     }
 }
